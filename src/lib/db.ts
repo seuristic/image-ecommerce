@@ -1,9 +1,9 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const MONGODB_URI = process.env.MONGODB_URI!
 
 if (!MONGODB_URI) {
-  throw new Error("MONGODB_URI is not set")
+  throw new Error('MONGODB_URI is not set')
 }
 
 let cached = global.mongoose
@@ -11,11 +11,11 @@ let cached = global.mongoose
 if (!cached) {
   cached = global.mongoose = {
     conn: null,
-    promise: null,
+    promise: null
   }
 }
 
-async function dbConnect() {
+async function connectToDatabase() {
   if (cached.conn) {
     return cached.conn
   }
@@ -27,7 +27,7 @@ async function dbConnect() {
       useFindAndModify: false,
       useCreateIndex: true,
       bufferCommands: true,
-      maxPoolSize: 5,
+      maxPoolSize: 5
     }
 
     cached.promise = mongoose
@@ -38,11 +38,11 @@ async function dbConnect() {
   try {
     cached.conn = await cached.promise
   } catch (error) {
-    console.log("error", error)
+    console.log('error', error)
     cached.promise = null
   }
 
   return cached.conn
 }
 
-export default dbConnect
+export default connectToDatabase
