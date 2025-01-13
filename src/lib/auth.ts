@@ -51,6 +51,8 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
+    // This callback is called whenever a JSON Web Token is created (i.e. at sign in) or updated (i.e whenever a session is accessed in the client).
+    // The returned value will be encrypted, and it is stored in a cookie.
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
@@ -59,6 +61,9 @@ export const authOptions: NextAuthOptions = {
 
       return token
     },
+
+    // The session callback is called whenever a session is checked.
+    // By default, only a subset of the token is returned for increased security.
     async session({ session, token }) {
       session.user.id = token.id as string
       session.user.role = token.role as string

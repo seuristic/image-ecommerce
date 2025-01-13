@@ -38,7 +38,7 @@ async function connectToDatabase() {
   try {
     cached.conn = await cached.promise
   } catch (error) {
-    console.log('error', error)
+    console.log('Error(caching DB connection):', error)
     cached.promise = null
   }
 
