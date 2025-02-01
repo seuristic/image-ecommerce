@@ -50,7 +50,6 @@ export default function AdminProductForm() {
       await apiClient.createProduct(data)
       showNotification('Product created successfully!', 'success')
 
-      // Reset form after successful submission
       setValue('name', '')
       setValue('description', '')
       setValue('imageUrl', '')
@@ -81,7 +80,7 @@ export default function AdminProductForm() {
           {...register('name', { required: 'Name is required' })}
         />
         {errors.name && (
-          <span className="text-error text-sm mt-1">{errors.name.message}</span>
+          <span className="text-error mt-1 text-sm">{errors.name.message}</span>
         )}
       </div>
 
@@ -94,7 +93,7 @@ export default function AdminProductForm() {
           {...register('description', { required: 'Description is required' })}
         />
         {errors.description && (
-          <span className="text-error text-sm mt-1">
+          <span className="text-error mt-1 text-sm">
             {errors.description.message}
           </span>
         )}
@@ -109,7 +108,7 @@ export default function AdminProductForm() {
 
       {fields.map((field, index) => (
         <div key={field.id} className="card bg-base-200 p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="form-control">
               <label className="label">Size & Aspect Ratio</label>
               <select
@@ -150,7 +149,7 @@ export default function AdminProductForm() {
                 })}
               />
               {errors.variants?.[index]?.price && (
-                <span className="text-error text-sm mt-1">
+                <span className="text-error mt-1 text-sm">
                   {errors.variants[index]?.price?.message}
                 </span>
               )}
@@ -163,7 +162,7 @@ export default function AdminProductForm() {
                 onClick={() => remove(index)}
                 disabled={fields.length === 1}
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -181,7 +180,7 @@ export default function AdminProductForm() {
           })
         }
       >
-        <Plus className="w-4 h-4 mr-2" />
+        <Plus className="mr-2 h-4 w-4" />
         Add Variant
       </button>
 
@@ -192,7 +191,7 @@ export default function AdminProductForm() {
       >
         {loading ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Creating Product...
           </>
         ) : (

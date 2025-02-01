@@ -21,17 +21,13 @@ async function connectToDatabase() {
   }
 
   if (!cached.promise) {
-    const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true,
+    const options = {
       bufferCommands: true,
       maxPoolSize: 5
     }
 
     cached.promise = mongoose
-      .connect(MONGODB_URI, opts)
+      .connect(MONGODB_URI, options)
       .then(() => mongoose.connection)
   }
 

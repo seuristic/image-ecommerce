@@ -17,8 +17,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         throw new Error('Failed to authenticate')
       }
 
-      const data = await response.json()
-      const { signature, expire, token } = data
+      const { signature, expire, token } = await response.json()
 
       return { signature, expire, token }
     } catch (error) {
