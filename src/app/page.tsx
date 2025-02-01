@@ -3,6 +3,7 @@
 import { apiClient } from '@/lib/api-client'
 import { IProduct } from '@/models/Product.model'
 import { useEffect, useState } from 'react'
+import ImageGallery from './components/ImageGallery'
 
 export default function Home() {
   const [products, setProducts] = useState<IProduct[]>([])

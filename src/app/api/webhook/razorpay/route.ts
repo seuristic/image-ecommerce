@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
           service: 'sandbox.smtp.mailtrap.io',
           port: 2525,
           auth: {
-            user: '3605c0d45f79ed',
-            pass: '31fc05e89f1736' // TODO: put these credentials into env
+            user: process.env.MAILTRAP_USER,
+            pass: process.env.MAILTRAP_PASS
           }
         })
 

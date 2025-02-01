@@ -64,7 +64,9 @@ export default function OrdersPage() {
                     }}
                   >
                     <IKImage
-                      urlEndpoint={process.env.NEXT_PUBLIC_URL_ENDPOINT}
+                      urlEndpoint={
+                        process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT
+                      }
                       path={product.imageUrl}
                       alt={`Order ${order._id?.toString().slice(-6)}`}
                       transformation={[
@@ -122,7 +124,7 @@ export default function OrdersPage() {
                         </p>
                         {order.status === 'completed' && (
                           <a
-                            href={`${process.env.NEXT_PUBLIC_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center/${product.imageUrl}`}
+                            href={`${process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center/${product.imageUrl}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="btn btn-primary gap-2"
