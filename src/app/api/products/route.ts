@@ -10,14 +10,14 @@ export async function GET() {
     const products = await Product.find({}).lean()
 
     if (!products || products.length === 0) {
-      return NextResponse.json({ error: 'No products found' }, { status: 404 })
+      return NextResponse.json([], { status: 200 })
     }
 
-    return NextResponse.json({ products }, { status: 200 })
-  } catch (e) {
-    console.error('Database Error:', e)
+    return NextResponse.json(products)
+  } catch (error) {
+    console.error('Error fetching products:', error)
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Failed to fetch products' },
       { status: 500 }
     )
   }

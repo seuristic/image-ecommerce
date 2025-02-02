@@ -49,14 +49,14 @@ class APIClient {
   }
 
   async createProduct(productData: ProductFormData) {
-    return this.fetch<IProduct>('/products', {
+    return this.fetch<IProduct>('/api/products', {
       method: 'POST',
       body: productData
     })
   }
 
   async getUserOrders() {
-    return this.fetch<IOrder[]>('/orders/user')
+    return this.fetch<IOrder[]>('/api/orders/user')
   }
 
   async createOrder(orderData: CreateOrderData) {
@@ -65,7 +65,7 @@ class APIClient {
       productId: orderData.productId.toString()
     }
 
-    return this.fetch<{ orderId: string; amount: number }>('/orders', {
+    return this.fetch<{ orderId: string; amount: number }>('/api/orders', {
       method: 'POST',
       body: sanitizedOrderData
     })
