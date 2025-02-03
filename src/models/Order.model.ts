@@ -18,7 +18,7 @@ export interface IOrder {
   productId: mongoose.Types.ObjectId | PopulatedProduct
   variant: ImageVariant
   razorpayOrderId: string
-  razorpayPaymentId: string
+  razorpayPaymentId?: string
   amount: number
   status: 'pending' | 'completed' | 'failed'
   downloadUrl?: string
@@ -49,7 +49,7 @@ const orderSchema = new Schema<IOrder>(
       }
     },
     razorpayOrderId: { type: String, required: true },
-    razorpayPaymentId: { type: String, required: true },
+    razorpayPaymentId: { type: String },
     amount: {
       type: Number,
       required: true
