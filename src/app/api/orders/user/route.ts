@@ -1,34 +1,42 @@
-import { authOptions } from '@/lib/auth'
-import connectToDatabase from '@/lib/db'
-import Order from '@/models/Order.model'
-import { getServerSession } from 'next-auth'
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import connectToDatabase from "@/lib/db";
+import Order from "@/models/Order.model";
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
 
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await connectToDatabase()
+    await connectToDatabase();
 
     const orders = await Order.find({ userId: session.user.id })
       .populate({
-        path: 'productId',
-        select: 'name imageUrl',
-        options: { strictPopulate: true }
+        path: "productId",
+        select: "imageUrl name",
+        options: { strictPopulate: false },
       })
       .sort({ createdAt: -1 })
-      .lean()
+      .lean();
 
-    return NextResponse.json({ orders }, { status: 200 })
-  } catch (e) {
-    console.error('Error:', e)
+    const validOrders = orders.map((order) => ({
+      ...order,
+      productId: order.productId || {
+        imageUrl: null,
+        name: "Product no longer available",
+      },
+    }));
+
+    return NextResponse.json(validOrders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Failed to fetch orders" },
       { status: 500 }
-    )
+    );
   }
 }
