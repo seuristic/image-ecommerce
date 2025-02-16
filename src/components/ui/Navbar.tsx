@@ -13,21 +13,34 @@ import {
 import {
   ArrowRightEndOnRectangleIcon,
   Bars3Icon,
-  BellIcon,
   UserCircleIcon,
-  UserIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useCallback } from 'react'
 
 export const LOGO_HEIGHT = 42
 
 export default function Navbar() {
   const { data: session } = useSession()
   const pathname = usePathname()
+
+  const navRoutes = useCallback(() => {
+    return [
+      { name: 'Home', path: '/' },
+      ...(session
+        ? [{ name: 'Orders', path: '/orders', protected: true }]
+        : [
+            { name: 'Login', path: '/login' },
+            { name: 'Register', path: '/register' }
+          ])
+    ]
+  }, [session])
+
+  const navItems = navRoutes()
 
   return (
     <Disclosure as='nav' className='bg-white shadow-sm'>
@@ -87,14 +100,13 @@ export default function Navbar() {
             </div> */}
           </div>
           <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
-            {/* Profile dropdown */}
             {session ? (
               <Menu as='div' className='relative ml-3'>
                 <div>
                   <MenuButton className='relative flex rounded-full bg-white text-sm focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden'>
                     <span className='absolute -inset-1.5' />
                     <span className='sr-only'>Open user menu</span>
-                    <UserIcon className='size-6' />
+                    <UserCircleIcon className='size-6' />
                   </MenuButton>
                 </div>
                 <MenuItems
@@ -104,6 +116,24 @@ export default function Navbar() {
                   <div className='block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden'>
                     {session.user.email}
                   </div>
+                  <MenuItem>
+                    <Link
+                      href='/orders'
+                      className='block w-full rounded px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
+                    >
+                      Orders
+                    </Link>
+                  </MenuItem>
+                  {session.user.role === 'admin' && (
+                    <MenuItem>
+                      <Link
+                        href='/admin'
+                        className='block w-full rounded px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
+                      >
+                        Add Product
+                      </Link>
+                    </MenuItem>
+                  )}
                   <MenuItem>
                     <button
                       onClick={() => signOut()}
@@ -118,7 +148,7 @@ export default function Navbar() {
               <div className='flex flex-1 items-center justify-end gap-x-6'>
                 <Link
                   href='/login'
-                  className='text-sm/6 font-semibold text-gray-900 hover:text-gray-500 sm:flex sm:gap-2'
+                  className='text-sm/6 font-semibold text-gray-900 hover:text-gray-600 sm:flex sm:gap-2'
                 >
                   <span className='hidden sm:block'>Login</span>
                   <ArrowRightEndOnRectangleIcon className='size-6' />
@@ -137,15 +167,7 @@ export default function Navbar() {
 
       <DisclosurePanel className='sm:hidden'>
         <div className='space-y-1 pt-2 pb-4'>
-          {[
-            { name: 'Home', path: '/' },
-            ...(!session
-              ? [
-                  { name: 'Login', path: '/login' },
-                  { name: 'Register', path: '/register' }
-                ]
-              : [])
-          ].map((page, i) => (
+          {navItems.map((page, i) => (
             <DisclosureButton
               key={i}
               className={cn(

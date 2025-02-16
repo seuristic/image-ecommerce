@@ -17,6 +17,9 @@ import {
   PhotoIcon
 } from '@heroicons/react/24/outline'
 import { toast } from 'sonner'
+import Navbar from '@/components/ui/Navbar'
+import MainLayout from '@/components/layouts/MainLayout'
+import PageLoader from '@/components/PageLoader'
 
 export default function ProductPage() {
   const params = useParams()
@@ -88,8 +91,8 @@ export default function ProductPage() {
         }
       }
 
-      const rzp = new (window as any).Razorpay(options)
-      rzp.open()
+      const razorpay = new (window as any).Razorpay(options)
+      razorpay.open()
     } catch (error) {
       console.error(error)
       toast(error instanceof Error ? error.message : 'Payment failed')
@@ -109,12 +112,7 @@ export default function ProductPage() {
     ]
   }
 
-  if (loading)
-    return (
-      <div className='flex min-h-[70vh] items-center justify-center'>
-        <span>Loading...</span>
-      </div>
-    )
+  if (loading) return <PageLoader />
 
   if (error || !product)
     return (
@@ -125,9 +123,8 @@ export default function ProductPage() {
     )
 
   return (
-    <div className='container mx-auto px-4 py-8'>
+    <MainLayout>
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
-        {/* Image Section */}
         <div className='space-y-4'>
           <div
             className='relative overflow-hidden rounded-lg'
@@ -153,7 +150,6 @@ export default function ProductPage() {
             />
           </div>
 
-          {/* Image Dimensions Info */}
           {selectedVariant && (
             <div className='text-base-content/70 text-center text-sm'>
               Preview: {IMAGE_VARIANTS[selectedVariant.type].dimensions.width} x{' '}
@@ -162,7 +158,6 @@ export default function ProductPage() {
           )}
         </div>
 
-        {/* Product Details Section */}
         <div className='space-y-6'>
           <div>
             <h1 className='mb-2 text-4xl font-bold'>{product.name}</h1>
@@ -171,7 +166,6 @@ export default function ProductPage() {
             </p>
           </div>
 
-          {/* Variants Selection */}
           <div className='space-y-4'>
             <h2 className='text-xl font-semibold'>Available Versions</h2>
             {product.variants.map((variant: any) => (
@@ -232,7 +226,6 @@ export default function ProductPage() {
             ))}
           </div>
 
-          {/* License Information */}
           <div className='card bg-base-200'>
             <div className='card-body p-4'>
               <h3 className='mb-2 font-semibold'>License Information</h3>
@@ -250,6 +243,6 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   )
 }
