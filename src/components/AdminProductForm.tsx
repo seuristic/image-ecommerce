@@ -4,14 +4,13 @@ import { useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FileUpload } from './FileUpload'
 import { IKUploadResponse } from 'imagekitio-next/dist/types/components/IKUpload/props'
-import { useNotification } from './Notification'
 import { IMAGE_VARIANTS, ImageVariantType } from '@/models/Product.model'
 import { apiClient, ProductFormData } from '@/lib/api-client'
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { toast } from 'sonner'
 
 export default function AdminProductForm() {
   const [loading, setLoading] = useState(false)
-  const { showNotification } = useNotification()
 
   const {
     register,
@@ -41,14 +40,14 @@ export default function AdminProductForm() {
 
   const handleUploadSuccess = (response: IKUploadResponse) => {
     setValue('imageUrl', response.filePath)
-    showNotification('Image uploaded successfully!', 'success')
+    toast.success('Image uploaded successfully!')
   }
 
   const onSubmit = async (data: ProductFormData) => {
     setLoading(true)
     try {
       await apiClient.createProduct(data)
-      showNotification('Product created successfully!', 'success')
+      toast.success('Product created successfully!')
 
       setValue('name', '')
       setValue('description', '')
@@ -61,9 +60,8 @@ export default function AdminProductForm() {
         }
       ])
     } catch (error) {
-      showNotification(
-        error instanceof Error ? error.message : 'Failed to create product',
-        'error'
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to create product'
       )
     } finally {
       setLoading(false)

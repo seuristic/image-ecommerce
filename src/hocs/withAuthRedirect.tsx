@@ -1,11 +1,11 @@
 'use client'
 
-import { JSX, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import PageLoader from '@/components/PageLoader'
 
-export function withAuthRedirect<P extends JSX.IntrinsicAttributes>(
+export function withAuthRedirect<P extends object>(
   Component: React.ComponentType<P>
 ) {
   return function AuthenticatedComponent(props: P) {
@@ -14,12 +14,16 @@ export function withAuthRedirect<P extends JSX.IntrinsicAttributes>(
 
     useEffect(() => {
       if (status === 'authenticated') {
-        router.push('/')
+        router.replace('/')
       }
     }, [status, router])
 
-    if (status !== 'unauthenticated') {
+    if (status === 'loading') {
       return <PageLoader />
+    }
+
+    if (status === 'authenticated') {
+      return null // Prevents rendering while redirecting
     }
 
     return <Component {...props} />
