@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { IOrder } from '@/models/Order.model'
-import { Loader2, Download } from 'lucide-react'
 import { IKImage } from 'imagekitio-next'
 import { IMAGE_VARIANTS } from '@/models/Product.model'
 import { apiClient } from '@/lib/api-client'
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<IOrder[]>([])
@@ -30,16 +30,16 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center">
-        <Loader2 className="text-primary h-12 w-12 animate-spin" />
+      <div className='flex min-h-[70vh] items-center justify-center'>
+        <span>Loading...</span>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold">My Orders</h1>
-      <div className="space-y-6">
+    <div className='container mx-auto px-4 py-8'>
+      <h1 className='mb-8 text-3xl font-bold'>My Orders</h1>
+      <div className='space-y-6'>
         {orders.map((order) => {
           const variantDimensions =
             IMAGE_VARIANTS[
@@ -51,13 +51,13 @@ export default function OrdersPage() {
           return (
             <div
               key={order._id?.toString()}
-              className="card bg-base-100 shadow-xl"
+              className='card bg-base-100 shadow-xl'
             >
-              <div className="card-body">
-                <div className="flex flex-col gap-6 md:flex-row">
+              <div className='card-body'>
+                <div className='flex flex-col gap-6 md:flex-row'>
                   {/* Preview Image - Low Quality */}
                   <div
-                    className="bg-base-200 relative overflow-hidden rounded-lg"
+                    className='bg-base-200 relative overflow-hidden rounded-lg'
                     style={{
                       width: '200px',
                       aspectRatio: `${variantDimensions.width} / ${variantDimensions.height}`
@@ -76,26 +76,26 @@ export default function OrdersPage() {
                           focus: 'center'
                         }
                       ]}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
+                      className='h-full w-full object-cover'
+                      loading='lazy'
                     />
                   </div>
 
                   {/* Order Details */}
-                  <div className="flex-grow">
-                    <div className="flex items-start justify-between">
+                  <div className='flex-grow'>
+                    <div className='flex items-start justify-between'>
                       <div>
-                        <h2 className="mb-2 text-xl font-bold">
+                        <h2 className='mb-2 text-xl font-bold'>
                           Order #{order._id?.toString().slice(-6)}
                         </h2>
-                        <div className="text-base-content/70 space-y-1">
+                        <div className='text-base-content/70 space-y-1'>
                           <p>
                             Resolution: {variantDimensions.width} x{' '}
                             {variantDimensions.height}px
                           </p>
                           <p>
                             License Type:{' '}
-                            <span className="capitalize">
+                            <span className='capitalize'>
                               {order.variant.license}
                             </span>
                           </p>
@@ -116,21 +116,21 @@ export default function OrdersPage() {
                         </div>
                       </div>
 
-                      <div className="text-right">
-                        <p className="mb-4 text-2xl font-bold">
+                      <div className='text-right'>
+                        <p className='mb-4 text-2xl font-bold'>
                           ${order.amount.toFixed(2)}
                         </p>
                         {order.status === 'completed' && (
                           <a
                             href={`${process.env.NEXT_PUBLIC_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center/${product.imageUrl}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-primary gap-2"
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='btn btn-primary gap-2'
                             download={`image-${order._id
                               ?.toString()
                               .slice(-6)}.jpg`}
                           >
-                            <Download className="h-4 w-4" />
+                            <ArrowDownTrayIcon className='size-4' />
                             Download High Quality
                           </a>
                         )}
@@ -144,8 +144,8 @@ export default function OrdersPage() {
         })}
 
         {orders.length === 0 && (
-          <div className="py-12 text-center">
-            <div className="text-base-content/70 text-lg">No orders found</div>
+          <div className='py-12 text-center'>
+            <div className='text-base-content/70 text-lg'>No orders found</div>
           </div>
         )}
       </div>

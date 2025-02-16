@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { FileUpload } from './FileUpload'
 import { IKUploadResponse } from 'imagekitio-next/dist/types/components/IKUpload/props'
-import { Loader2, Plus, Trash2 } from 'lucide-react'
 import { useNotification } from './Notification'
 import { IMAGE_VARIANTS, ImageVariantType } from '@/models/Product.model'
 import { apiClient, ProductFormData } from '@/lib/api-client'
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 export default function AdminProductForm() {
   const [loading, setLoading] = useState(false)
@@ -71,21 +71,21 @@ export default function AdminProductForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="form-control">
-        <label className="label">Product Name</label>
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+      <div className='form-control'>
+        <label className='label'>Product Name</label>
         <input
-          type="text"
+          type='text'
           className={`input input-bordered ${errors.name ? 'input-error' : ''}`}
           {...register('name', { required: 'Name is required' })}
         />
         {errors.name && (
-          <span className="text-error mt-1 text-sm">{errors.name.message}</span>
+          <span className='text-error mt-1 text-sm'>{errors.name.message}</span>
         )}
       </div>
 
-      <div className="form-control">
-        <label className="label">Description</label>
+      <div className='form-control'>
+        <label className='label'>Description</label>
         <textarea
           className={`textarea textarea-bordered h-24 ${
             errors.description ? 'textarea-error' : ''
@@ -93,26 +93,26 @@ export default function AdminProductForm() {
           {...register('description', { required: 'Description is required' })}
         />
         {errors.description && (
-          <span className="text-error mt-1 text-sm">
+          <span className='text-error mt-1 text-sm'>
             {errors.description.message}
           </span>
         )}
       </div>
 
-      <div className="form-control">
-        <label className="label">Product Image</label>
+      <div className='form-control'>
+        <label className='label'>Product Image</label>
         <FileUpload onSuccess={handleUploadSuccess} />
       </div>
 
-      <div className="divider">Image Variants</div>
+      <div className='divider'>Image Variants</div>
 
       {fields.map((field, index) => (
-        <div key={field.id} className="card bg-base-200 p-4">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="form-control">
-              <label className="label">Size & Aspect Ratio</label>
+        <div key={field.id} className='card bg-base-200 p-4'>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+            <div className='form-control'>
+              <label className='label'>Size & Aspect Ratio</label>
               <select
-                className="select select-bordered"
+                className='select select-bordered'
                 {...register(`variants.${index}.type`)}
               >
                 {Object.entries(IMAGE_VARIANTS).map(([key, value]) => (
@@ -124,24 +124,24 @@ export default function AdminProductForm() {
               </select>
             </div>
 
-            <div className="form-control">
-              <label className="label">License</label>
+            <div className='form-control'>
+              <label className='label'>License</label>
               <select
-                className="select select-bordered"
+                className='select select-bordered'
                 {...register(`variants.${index}.license`)}
               >
-                <option value="personal">Personal Use</option>
-                <option value="commercial">Commercial Use</option>
+                <option value='personal'>Personal Use</option>
+                <option value='commercial'>Commercial Use</option>
               </select>
             </div>
 
-            <div className="form-control">
-              <label className="label">Price ($)</label>
+            <div className='form-control'>
+              <label className='label'>Price ($)</label>
               <input
-                type="number"
-                step="0.01"
-                min="0.01"
-                className="input input-bordered"
+                type='number'
+                step='0.01'
+                min='0.01'
+                className='input input-bordered'
                 {...register(`variants.${index}.price`, {
                   valueAsNumber: true,
                   required: 'Price is required',
@@ -149,20 +149,20 @@ export default function AdminProductForm() {
                 })}
               />
               {errors.variants?.[index]?.price && (
-                <span className="text-error mt-1 text-sm">
+                <span className='text-error mt-1 text-sm'>
                   {errors.variants[index]?.price?.message}
                 </span>
               )}
             </div>
 
-            <div className="flex items-end">
+            <div className='flex items-end'>
               <button
-                type="button"
-                className="btn btn-error btn-sm"
+                type='button'
+                className='btn btn-error btn-sm'
                 onClick={() => remove(index)}
                 disabled={fields.length === 1}
               >
-                <Trash2 className="h-4 w-4" />
+                <TrashIcon className='h-4 w-4' />
               </button>
             </div>
           </div>
@@ -170,8 +170,8 @@ export default function AdminProductForm() {
       ))}
 
       <button
-        type="button"
-        className="btn btn-outline btn-block"
+        type='button'
+        className='btn btn-outline btn-block'
         onClick={() =>
           append({
             type: 'SQUARE' as ImageVariantType,
@@ -180,18 +180,18 @@ export default function AdminProductForm() {
           })
         }
       >
-        <Plus className="mr-2 h-4 w-4" />
+        <PlusIcon className='mr-2 h-4 w-4' />
         Add Variant
       </button>
 
       <button
-        type="submit"
-        className="btn btn-primary btn-block"
+        type='submit'
+        className='btn btn-primary btn-block'
         disabled={loading}
       >
         {loading ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            {/* <Loader2 className='mr-2 h-4 w-4 animate-spin' /> */}
             Creating Product...
           </>
         ) : (

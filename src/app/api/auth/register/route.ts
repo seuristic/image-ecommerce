@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json()
+
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
@@ -13,6 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     await connectToDatabase()
+
     const existingUser = await User.findOne({ email })
 
     if (existingUser) {
@@ -30,7 +32,6 @@ export async function POST(request: NextRequest) {
     )
   } catch (error) {
     console.error('Error(register):', error)
-
     return NextResponse.json(
       { error: 'Failed to register a user' },
       { status: 501 }

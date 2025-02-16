@@ -3,10 +3,12 @@
 import { apiClient } from '@/lib/api-client'
 import { IProduct } from '@/models/Product.model'
 import { useEffect, useState } from 'react'
-import ImageGallery from './components/ImageGallery'
+import ImageGallery from '../components/ImageGallery'
+import Navbar from '@/components/ui/Navbar'
+import PageLoader from '@/components/PageLoader'
 
 export default function Home() {
-  const [products, setProducts] = useState<IProduct[]>([])
+  const [products, setProducts] = useState<IProduct[] | null>(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,9 +23,16 @@ export default function Home() {
     fetchProducts()
   }, [])
 
+  if (products === null) {
+    return <PageLoader />
+  }
+
   return (
-    <div>
-      <ImageGallery products={products} />
-    </div>
+    <>
+      <Navbar />
+      <div className='mx-auto max-w-7xl p-6'>
+        <ImageGallery products={products} />
+      </div>
+    </>
   )
 }

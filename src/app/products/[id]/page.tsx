@@ -9,10 +9,14 @@ import {
 } from '@/models/Product.model'
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Loader2, AlertCircle, Check, Image as ImageIcon } from 'lucide-react'
-import { useNotification } from '@/app/components/Notification'
 import { useSession } from 'next-auth/react'
 import { apiClient } from '@/lib/api-client'
+import {
+  CheckIcon,
+  ExclamationCircleIcon,
+  PhotoIcon
+} from '@heroicons/react/24/outline'
+import { toast } from 'sonner'
 
 export default function ProductPage() {
   const params = useParams()
@@ -22,7 +26,7 @@ export default function ProductPage() {
   const [selectedVariant, setSelectedVariant] = useState<ImageVariant | null>(
     null
   )
-  const { showNotification } = useNotification()
+
   const router = useRouter()
   const { data: session } = useSession()
 
@@ -52,13 +56,13 @@ export default function ProductPage() {
 
   const handlePurchase = async (variant: ImageVariant) => {
     if (!session) {
-      showNotification('Please login to make a purchase', 'error')
+      toast.error('Please login to make a purchase')
       router.push('/login')
       return
     }
 
     if (!product?._id) {
-      showNotification('Invalid product', 'error')
+      toast.error('Invalid product')
       return
     }
 
@@ -76,7 +80,7 @@ export default function ProductPage() {
         description: `${product.name} - ${variant.type} Version`,
         order_id: orderId,
         handler: function () {
-          showNotification('Payment successful!', 'success')
+          toast.success('Payment successful!')
           router.push('/orders')
         },
         prefill: {
@@ -88,10 +92,7 @@ export default function ProductPage() {
       rzp.open()
     } catch (error) {
       console.error(error)
-      showNotification(
-        error instanceof Error ? error.message : 'Payment failed',
-        'error'
-      )
+      toast(error instanceof Error ? error.message : 'Payment failed')
     }
   }
 
@@ -110,26 +111,26 @@ export default function ProductPage() {
 
   if (loading)
     return (
-      <div className="flex min-h-[70vh] items-center justify-center">
-        <Loader2 className="text-primary h-12 w-12 animate-spin" />
+      <div className='flex min-h-[70vh] items-center justify-center'>
+        <span>Loading...</span>
       </div>
     )
 
   if (error || !product)
     return (
-      <div className="alert alert-error mx-auto my-8 max-w-md">
-        <AlertCircle className="h-6 w-6" />
+      <div className='alert alert-error mx-auto my-8 max-w-md'>
+        <ExclamationCircleIcon className='size-6' />
         <span>{error || 'Product not found'}</span>
       </div>
     )
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+    <div className='container mx-auto px-4 py-8'>
+      <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
         {/* Image Section */}
-        <div className="space-y-4">
+        <div className='space-y-4'>
           <div
-            className="relative overflow-hidden rounded-lg"
+            className='relative overflow-hidden rounded-lg'
             style={{
               aspectRatio: selectedVariant
                 ? `${IMAGE_VARIANTS[selectedVariant.type].dimensions.width} / ${
@@ -147,14 +148,14 @@ export default function ProductPage() {
                   ? getTransformation(selectedVariant.type)
                   : getTransformation('SQUARE')
               }
-              className="h-full w-full object-cover"
-              loading="eager"
+              className='h-full w-full object-cover'
+              loading='eager'
             />
           </div>
 
           {/* Image Dimensions Info */}
           {selectedVariant && (
-            <div className="text-base-content/70 text-center text-sm">
+            <div className='text-base-content/70 text-center text-sm'>
               Preview: {IMAGE_VARIANTS[selectedVariant.type].dimensions.width} x{' '}
               {IMAGE_VARIANTS[selectedVariant.type].dimensions.height}px
             </div>
@@ -162,17 +163,17 @@ export default function ProductPage() {
         </div>
 
         {/* Product Details Section */}
-        <div className="space-y-6">
+        <div className='space-y-6'>
           <div>
-            <h1 className="mb-2 text-4xl font-bold">{product.name}</h1>
-            <p className="text-base-content/80 text-lg">
+            <h1 className='mb-2 text-4xl font-bold'>{product.name}</h1>
+            <p className='text-base-content/80 text-lg'>
               {product.description}
             </p>
           </div>
 
           {/* Variants Selection */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Available Versions</h2>
+          <div className='space-y-4'>
+            <h2 className='text-xl font-semibold'>Available Versions</h2>
             {product.variants.map((variant: any) => (
               <div
                 key={variant.type}
@@ -183,19 +184,19 @@ export default function ProductPage() {
                 }`}
                 onClick={() => setSelectedVariant(variant)}
               >
-                <div className="card-body p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <ImageIcon className="h-5 w-5" />
+                <div className='card-body p-4'>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-3'>
+                      <PhotoIcon className='h-5 w-5' />
                       <div>
-                        <h3 className="font-semibold">
+                        <h3 className='font-semibold'>
                           {
                             IMAGE_VARIANTS[
                               variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
                             ].label
                           }
                         </h3>
-                        <p className="text-base-content/70 text-sm">
+                        <p className='text-base-content/70 text-sm'>
                           {
                             IMAGE_VARIANTS[
                               variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
@@ -211,12 +212,12 @@ export default function ProductPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-xl font-bold">
+                    <div className='flex items-center gap-4'>
+                      <span className='text-xl font-bold'>
                         ${variant.price.toFixed(2)}
                       </span>
                       <button
-                        className="btn btn-primary btn-sm"
+                        className='btn btn-primary btn-sm'
                         onClick={(e) => {
                           e.stopPropagation()
                           handlePurchase(variant)
@@ -232,16 +233,16 @@ export default function ProductPage() {
           </div>
 
           {/* License Information */}
-          <div className="card bg-base-200">
-            <div className="card-body p-4">
-              <h3 className="mb-2 font-semibold">License Information</h3>
-              <ul className="space-y-2">
-                <li className="flex items-center gap-2">
-                  <Check className="text-success h-4 w-4" />
+          <div className='card bg-base-200'>
+            <div className='card-body p-4'>
+              <h3 className='mb-2 font-semibold'>License Information</h3>
+              <ul className='space-y-2'>
+                <li className='flex items-center gap-2'>
+                  <CheckIcon className='text-success h-4 w-4' />
                   <span>Personal: Use in personal projects</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="text-success h-4 w-4" />
+                <li className='flex items-center gap-2'>
+                  <CheckIcon className='text-success h-4 w-4' />
                   <span>Commercial: Use in commercial projects</span>
                 </li>
               </ul>

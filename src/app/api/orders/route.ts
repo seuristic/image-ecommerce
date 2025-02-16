@@ -19,6 +19,7 @@ export async function POST(request: Request) {
     }
 
     const { productId, variant } = await request.json()
+
     await connectToDatabase()
 
     const order = await razorpay.orders.create({
