@@ -7,7 +7,6 @@ import {
   IMAGE_VARIANTS,
   ImageVariantType
 } from '@/models/Product.model'
-import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { apiClient } from '@/lib/api-client'
@@ -17,23 +16,27 @@ import {
   PhotoIcon
 } from '@heroicons/react/24/outline'
 import { toast } from 'sonner'
-import Navbar from '@/components/ui/Navbar'
 import MainLayout from '@/components/layouts/MainLayout'
 import PageLoader from '@/components/PageLoader'
+import * as React from 'react'
+import { capitalize, cn } from '@/lib/utils'
+import Spinner from '@/components/ui/Spinner'
 
 export default function ProductPage() {
   const params = useParams()
-  const [product, setProduct] = useState<IProduct | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedVariant, setSelectedVariant] = useState<ImageVariant | null>(
-    null
-  )
+  const [product, setProduct] = React.useState<IProduct | null>(null)
+  const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
+  const [purchasing, setPurchasing] = React.useState<{
+    variant: ImageVariant
+  } | null>(null)
+  const [selectedVariant, setSelectedVariant] =
+    React.useState<ImageVariant | null>(null)
 
   const router = useRouter()
   const { data: session } = useSession()
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchProduct = async () => {
       const id = params?.id
 
@@ -46,6 +49,7 @@ export default function ProductPage() {
       try {
         const data = await apiClient.getProduct(id.toString())
         setProduct(data)
+        setSelectedVariant(data.variants[0])
       } catch (err) {
         console.error('Error fetching product:', err)
         setError(err instanceof Error ? err.message : 'Failed to load product')
@@ -70,6 +74,8 @@ export default function ProductPage() {
     }
 
     try {
+      setPurchasing({ variant })
+
       const { orderId, amount } = await apiClient.createOrder({
         productId: product._id,
         variant
@@ -96,6 +102,8 @@ export default function ProductPage() {
     } catch (error) {
       console.error(error)
       toast(error instanceof Error ? error.message : 'Payment failed')
+    } finally {
+      setPurchasing(null)
     }
   }
 
@@ -127,7 +135,7 @@ export default function ProductPage() {
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
         <div className='space-y-4'>
           <div
-            className='relative overflow-hidden rounded-lg'
+            className='relative overflow-hidden rounded'
             style={{
               aspectRatio: selectedVariant
                 ? `${IMAGE_VARIANTS[selectedVariant.type].dimensions.width} / ${
@@ -151,83 +159,90 @@ export default function ProductPage() {
           </div>
 
           {selectedVariant && (
-            <div className='text-base-content/70 text-center text-sm'>
+            <div className='text-center text-sm'>
               Preview: {IMAGE_VARIANTS[selectedVariant.type].dimensions.width} x{' '}
               {IMAGE_VARIANTS[selectedVariant.type].dimensions.height}px
             </div>
           )}
         </div>
 
-        <div className='space-y-6'>
-          <div>
-            <h1 className='mb-2 text-4xl font-bold'>{product.name}</h1>
-            <p className='text-base-content/80 text-lg'>
-              {product.description}
-            </p>
+        <div className='space-y-6 py-4'>
+          <div className='space-y-4'>
+            <h1 className='text-4xl font-bold'>{product.name}</h1>
+            <p className='text-lg'>{product.description}</p>
           </div>
 
           <div className='space-y-4'>
-            <h2 className='text-xl font-semibold'>Available Versions</h2>
+            <h2 className='text-xl font-semibold'>Available Size Variants</h2>
             {product.variants.map((variant: any) => (
               <div
                 key={variant.type}
-                className={`card bg-base-200 hover:bg-base-300 cursor-pointer transition-colors ${
+                className={`cursor-pointer rounded-2xl border-2 bg-gray-50 transition-colors hover:bg-gray-200 ${
                   selectedVariant?.type === variant.type
-                    ? 'ring-primary ring-2'
-                    : ''
+                    ? 'border-gray-600'
+                    : 'border-gray-100 hover:border-gray-300'
                 }`}
                 onClick={() => setSelectedVariant(variant)}
               >
-                <div className='card-body p-4'>
-                  <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-3'>
-                      <PhotoIcon className='h-5 w-5' />
-                      <div>
-                        <h3 className='font-semibold'>
-                          {
-                            IMAGE_VARIANTS[
-                              variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
-                            ].label
-                          }
-                        </h3>
-                        <p className='text-base-content/70 text-sm'>
-                          {
-                            IMAGE_VARIANTS[
-                              variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
-                            ].dimensions.width
-                          }{' '}
-                          x{' '}
-                          {
-                            IMAGE_VARIANTS[
-                              variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
-                            ].dimensions.height
-                          }
-                          px • {variant.license} license
-                        </p>
-                      </div>
+                <div className='flex items-center justify-between p-4'>
+                  <div className='flex items-center gap-4'>
+                    <PhotoIcon className='size-6' />
+                    <div>
+                      <h3 className='font-semibold'>
+                        {
+                          IMAGE_VARIANTS[
+                            variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
+                          ].label
+                        }
+                      </h3>
+                      <p className='text-sm'>
+                        {
+                          IMAGE_VARIANTS[
+                            variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
+                          ].dimensions.width
+                        }{' '}
+                        x{' '}
+                        {
+                          IMAGE_VARIANTS[
+                            variant.type.toUpperCase() as keyof typeof IMAGE_VARIANTS
+                          ].dimensions.height
+                        }
+                        px • {capitalize(variant.license)} License
+                      </p>
                     </div>
-                    <div className='flex items-center gap-4'>
-                      <span className='text-xl font-bold'>
-                        ${variant.price.toFixed(2)}
-                      </span>
-                      <button
-                        className='btn btn-primary btn-sm'
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handlePurchase(variant)
-                        }}
-                      >
-                        Buy Now
-                      </button>
-                    </div>
+                  </div>
+                  <div className='flex items-center gap-4 sm:gap-6'>
+                    <span className='text-xl font-bold'>
+                      ₹{variant.price.toFixed(2)}
+                    </span>
+                    <button
+                      className={cn(
+                        'rounded-md px-3 py-2 text-sm font-semibold text-white shadow-xs',
+                        purchasing && purchasing.variant.type === variant.type
+                          ? 'bg-indigo-300'
+                          : 'bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handlePurchase(variant)
+                      }}
+                      disabled={purchasing !== null}
+                    >
+                      {purchasing &&
+                      purchasing.variant.type === variant.type ? (
+                        <Spinner className='size-5' />
+                      ) : (
+                        'Buy Now'
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className='card bg-base-200'>
-            <div className='card-body p-4'>
+          <div className='bg-base-200'>
+            <div className='p-4'>
               <h3 className='mb-2 font-semibold'>License Information</h3>
               <ul className='space-y-2'>
                 <li className='flex items-center gap-2'>

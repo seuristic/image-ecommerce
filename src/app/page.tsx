@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import ImageGallery from '../components/ImageGallery'
 import Navbar from '@/components/ui/Navbar'
 import PageLoader from '@/components/PageLoader'
+import MainLayout from '@/components/layouts/MainLayout'
 
 export default function Home() {
   const [products, setProducts] = useState<IProduct[] | null>(null)
@@ -28,11 +29,8 @@ export default function Home() {
   }
 
   return (
-    <>
-      <Navbar />
-      <div className='mx-auto max-w-7xl p-6'>
-        <ImageGallery products={products} />
-      </div>
-    </>
+    <MainLayout>
+      <ImageGallery products={products} />
+    </MainLayout>
   )
 }
