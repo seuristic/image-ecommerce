@@ -259,7 +259,7 @@ export default function ProductForm() {
                       <div className='sm:col-span-2'>
                         <button
                           type='button'
-                          className='inline-flex items-center gap-x-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-sm font-semibold text-red-600 shadow-xs hover:bg-red-100'
+                          className='inline-flex items-center gap-x-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-sm font-semibold text-red-600 shadow-xs hover:bg-red-100 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500'
                           onClick={() => remove(i)}
                           disabled={fields.length === 1}
                         >

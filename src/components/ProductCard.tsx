@@ -65,14 +65,14 @@ export default function ProductCard({ product }: { product: IProduct }) {
             <span className='text-lg font-semibold'>
               From ₹{lowestPrice.toFixed(2)}
             </span>
-            <span className='text-xs'>
+            <span className='text-xs text-gray-500'>
               Sizes available: {product.variants.length}
             </span>
           </div>
 
           <Link
             href={`/products/${product._id}`}
-            className='mt-2 flex h-8 items-center justify-center gap-2 rounded-sm bg-white px-2 py-1 text-xs font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50'
+            className='mt-4 flex h-8 items-center justify-center gap-2 rounded-sm bg-white px-2 py-1 text-xs font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50'
           >
             <EyeIcon className='h-4 w-4' />
             View Options
