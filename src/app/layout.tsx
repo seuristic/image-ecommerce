@@ -11,8 +11,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Image Ecommerce App',
-  description: 'Commercial image ecommerce application'
+  title: 'Imagec App',
+  description: 'Image ecommerce application'
 }
 
 export default function RootLayout({
