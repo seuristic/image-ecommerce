@@ -11,7 +11,7 @@ export default function Admin() {
   const router = useRouter()
 
   React.useEffect(() => {
-    if (!session || session.user.role !== 'admin') {
+    if (session && session.user.role !== 'admin') {
       router.replace('/')
     }
   }, [session, router])
