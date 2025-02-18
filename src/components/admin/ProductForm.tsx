@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils'
 
 export default function ProductForm() {
   const [submitting, setSubmitting] = React.useState(false)
+  const [uploaded, setUploaded] = React.useState<boolean>(false)
 
   const {
     register,
@@ -65,6 +66,7 @@ export default function ProductForm() {
           license: 'personal'
         }
       ])
+      setUploaded(false)
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Failed to create product'
@@ -142,7 +144,11 @@ export default function ProductForm() {
                     className='mx-auto size-12 text-gray-300'
                   />
                   <div className='mt-4 flex justify-center text-sm/6 text-gray-600'>
-                    <FileUpload onSuccess={handleUploadSuccess} />
+                    <FileUpload
+                      uploaded={uploaded}
+                      setUploaded={setUploaded}
+                      onSuccess={handleUploadSuccess}
+                    />
                   </div>
                   <p className='text-xs/5 text-gray-600'>
                     PNG, JPG, JPEG, WEBP up to 10MB

@@ -5,14 +5,17 @@ import * as React from 'react'
 
 export const FileUpload = ({
   onSuccess,
-  className
+  className,
+  uploaded,
+  setUploaded
 }: {
   onSuccess: (response: IKUploadResponse) => void
   className?: string
+  uploaded: boolean
+  setUploaded: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   const [uploading, setUploading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
-  const [uploaded, setUploaded] = React.useState<boolean>(false)
 
   const onError = (error: { message: string }) => {
     setError(error.message)

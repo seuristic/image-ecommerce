@@ -13,7 +13,7 @@ import {
 import {
   ArrowRightEndOnRectangleIcon,
   Bars3Icon,
-  UserCircleIcon,
+  UserIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline'
 import { signOut, useSession } from 'next-auth/react'
@@ -106,7 +106,7 @@ export default function Navbar() {
                   <MenuButton className='relative flex rounded-full bg-white text-sm focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden'>
                     <span className='absolute -inset-1.5' />
                     <span className='sr-only'>Open user menu</span>
-                    <UserCircleIcon className='size-6' />
+                    <UserIcon className='size-6' />
                   </MenuButton>
                 </div>
                 <MenuItems

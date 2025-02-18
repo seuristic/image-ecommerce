@@ -1,6 +1,8 @@
-import ProductForm from '@/components/admin/ProductForm'
-import React from 'react'
+'use client'
 
-export default function Clone() {
+import ProductForm from '@/components/admin/ProductForm'
+import * as React from 'react'
+
+export default function Admin() {
   return <ProductForm />
 }

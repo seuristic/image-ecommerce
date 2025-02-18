@@ -58,7 +58,12 @@ export default function ProductCard({ product }: { product: IProduct }) {
           <h2 className='text-lg font-bold'>{product.name}</h2>
         </Link>
 
-        <p className='line-clamp-2 min-h-10 text-sm'>{product.description}</p>
+        <p
+          title={product.description}
+          className='line-clamp-2 min-h-10 text-sm'
+        >
+          {product.description}
+        </p>
 
         <div className='mt-2 items-center justify-between'>
           <div className='flex flex-col'>
