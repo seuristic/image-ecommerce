@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
       if (order) {
         const transporter = nodemailer.createTransport({
-          service: 'sandbox.smtp.mailtrap.io',
+          service: 'smtp.mailtrap.io',
           port: 2525,
           auth: {
             user: process.env.MAILTRAP_USER,
