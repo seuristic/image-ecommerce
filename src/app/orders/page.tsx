@@ -132,21 +132,21 @@ export default function OrdersPage() {
                         </div>
                       </div>
 
-                      <div className='text-right'>
-                        <p className='mb-4 text-2xl font-bold'>
+                      <div className='flex flex-col items-end justify-between gap-4 text-right'>
+                        <p className='text-2xl font-bold'>
                           ₹{(order.amount / 100).toFixed(2)}
                         </p>
                         {order.status === 'completed' && (
                           <a
-                            href={`${process.env.NEXT_PUBLIC_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center/${product.imageUrl}`}
+                            href={`${process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/tr:q-100,w-${variantDimensions.width},h-${variantDimensions.height},cm-extract,fo-center${product.imageUrl}`}
                             target='_blank'
                             rel='noopener noreferrer'
-                            className='btn btn-primary gap-2'
+                            className='inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                             download={`image-${order._id
                               ?.toString()
                               .slice(-6)}.jpg`}
                           >
-                            <ArrowDownTrayIcon className='size-4' />
+                            <ArrowDownTrayIcon className='-ml-0.5 size-5' />
                             Download High Quality
                           </a>
                         )}

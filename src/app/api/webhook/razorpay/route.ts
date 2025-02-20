@@ -20,8 +20,6 @@ export async function POST(req: NextRequest) {
 
     const event = JSON.parse(body)
 
-    console.log('DEBUGGING -- /api/webhook/razorpay API', { body, event })
-
     await connectToDatabase()
 
     if (event.event === 'payment.captured') {
