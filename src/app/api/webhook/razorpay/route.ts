@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     await connectToDatabase()
 
     if (event.event === 'payment.captured') {
-      const payment = event.payload.payment.entitiy
+      const payment = event.payload.payment.entity
 
       const order = await Order.findOneAndUpdate(
         { razorpayOrderId: payment.order_id },
