@@ -13,7 +13,7 @@ import MainLayout from '@/components/layouts/MainLayout'
 import { capitalize, cn } from '@/lib/utils'
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState<IOrder[] | null>(null)
+  const [orders, setOrders] = useState<IOrder[]>([])
   const [loading, setLoading] = useState(true)
 
   const { data: session, status } = useSession()
@@ -37,7 +37,7 @@ export default function OrdersPage() {
     return <PageLoader />
   }
 
-  if (orders === null) {
+  if (status === 'unauthenticated') {
     return (
       <div className='flex h-svh items-center justify-center'>
         <span className='text-lg'>

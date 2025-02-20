@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         })
 
         await transporter.sendMail({
-          from: '',
+          from: 'seuristic@gmail.com',
           to: order.userId.email,
           subject: 'Order Completed',
           text: `Your order ${order.productId.name} has been successfully placed`
